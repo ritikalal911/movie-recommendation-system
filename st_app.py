@@ -64,6 +64,12 @@ if option == 'Content-Based':
     selected_movie = st.selectbox('Select a movie:', movies_df['title'].values, key='content_based_selectbox', placeholder="Choose a Movie")
 
     if st.button('Get Recommendations'):
+        st.write('Title : ', selected_movie)
+        st.write(f"Genres: {', '.join(movies_df.loc[movies_df['title'] == selected_movie, 'genres'].values[0])}")
+
+        st.write("Director:", movies_df.loc[movies_df['title'] == selected_movie, 'director'].values[0])
+        st.write("Cast:", ' '.join(movies_df.loc[movies_df['title'] == selected_movie, 'cast'].values[0]))
+        
         content_based_recommendations = get_content_based_recommendations(selected_movie, cosine_sim)
         metadata_recommendations = get_metadata_based_recommendations(selected_movie, cosine_sim2)
 
