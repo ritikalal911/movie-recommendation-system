@@ -36,8 +36,6 @@ def get_demographic_recommendations(new_movies_df, C, m):
     recommendations = new_movies_df["title"].head(10)
     return recommendations
 
-
-
 # Function to get collaborative recommendations
 def get_collaborative_recommendations():
     return "Under construction..."
@@ -49,19 +47,21 @@ option = st.sidebar.selectbox('Select Recommendation Type', ['Content-Based', 'D
 
 if option == 'Content-Based':
     st.subheader('Content-Based Filtering Recommendations')
-    selected_movie = st.selectbox('Select a movie:', movies_df['title'].values)
+
+    selected_movie = st.selectbox('Select a movie:', movies_df['title'].values, key='content_based_selectbox', placeholder = "Choose a Movie")
+
     if st.button('Get Recommendations'):
         recommendations = get_content_based_recommendations(selected_movie, cosine_sim)
+        st.write(f"Recommendations for {selected_movie}:")
         st.write(recommendations)
 
 elif option == 'Demographic':
     st.subheader('Demographic Filtering Recommendations')
     new_movies_df = movies_df.copy().loc[movies_df["vote_count"] >= m]
     recommendations = get_demographic_recommendations(new_movies_df, C, m)
+    st.write("Top 10 Popular and Well-Rated Movies :")
     st.write(recommendations)
 
 else:
     st.subheader('Collaborative Filtering Recommendations')
     st.write(get_collaborative_recommendations())
-    
-
