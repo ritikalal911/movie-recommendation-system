@@ -1,10 +1,5 @@
 import streamlit as st
 import pickle
-import numpy as np
-import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from ast import literal_eval
 
 # Load pickled data
 with open("recommendation_system_data.pickle", "rb") as f:
@@ -61,26 +56,29 @@ option = st.sidebar.selectbox('Select Recommendation Type', ['Content-Based', 'D
 if option == 'Content-Based':
     st.subheader('Content-Based and Metadata Recommendations')
 
-    selected_movie = st.selectbox('Select a movie:', movies_df['title'].values, key='content_based_selectbox', placeholder="Choose a Movie")
+    selected_movie = st.selectbox('Select a movie:', movies_df['title'].values, key='content_based_selectbox', placeholder="Choose a Movie", index=None)
 
     if st.button('Get Recommendations'):
-        st.write('Title : ', selected_movie)
-        st.write(f"Genres: {', '.join(movies_df.loc[movies_df['title'] == selected_movie, 'genres'].values[0])}")
+        if selected_movie !=None:
+            st.write('Title : ', selected_movie)
+            st.write(f"Genres: {', '.join(movies_df.loc[movies_df['title'] == selected_movie, 'genres'].values[0])}")
 
-        st.write("Director:", movies_df.loc[movies_df['title'] == selected_movie, 'director'].values[0])
-        st.write("Cast:", ' '.join(movies_df.loc[movies_df['title'] == selected_movie, 'cast'].values[0]))
-        
-        content_based_recommendations = get_content_based_recommendations(selected_movie, cosine_sim)
-        metadata_recommendations = get_metadata_based_recommendations(selected_movie, cosine_sim2)
+            st.write("Director:", movies_df.loc[movies_df['title'] == selected_movie, 'director'].values[0])
+            st.write("Cast:", ' '.join(movies_df.loc[movies_df['title'] == selected_movie, 'cast'].values[0]))
+            
+            content_based_recommendations = get_content_based_recommendations(selected_movie, cosine_sim)
+            metadata_recommendations = get_metadata_based_recommendations(selected_movie, cosine_sim2)
 
-        # Display recommendations side by side
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write(f"Recommendations for {selected_movie} based on content:")
-            st.write(content_based_recommendations)
-        with col2:
-            st.write(f"Recommendations for {selected_movie} based on metadata:")
-            st.write(metadata_recommendations)
+            # Display recommendations side by side
+            col1, col2 = st.columns(2)
+            with col1:
+                st.write(f"Recommendations for {selected_movie} based on content:")
+                st.write(content_based_recommendations)
+            with col2:
+                st.write(f"Recommendations for {selected_movie} based on metadata:")
+                st.write(metadata_recommendations)
+        else:
+            st.error("Please Select a Movie")
 
 elif option == 'Demographic':
     st.subheader('Demographic Filtering Recommendations')
